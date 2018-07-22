@@ -1,5 +1,7 @@
 package org.jnbt;
 
+//@formatter:off
+
 /*
  * JNBT License
  * 
@@ -33,13 +35,16 @@ package org.jnbt;
  * POSSIBILITY OF SUCH DAMAGE. 
  */
 
+//@formatter:on
+
 /**
  * The <code>TAG_Byte</code> tag.
+ * 
  * @author Graham Edgecombe
- *
+ * 
  */
 public final class ByteTag extends Tag {
-
+	
 	/**
 	 * The value.
 	 */
@@ -47,27 +52,61 @@ public final class ByteTag extends Tag {
 	
 	/**
 	 * Creates the tag.
-	 * @param name The name.
-	 * @param value The value.
+	 * 
+	 * @param name
+	 *            The name.
+	 * @param value
+	 *            The value.
 	 */
-	public ByteTag(String name, byte value) {
+	public ByteTag(final String name, final byte value) {
+	
 		super(name);
 		this.value = value;
 	}
-
+	
 	@Override
 	public Byte getValue() {
+	
 		return value;
 	}
 	
 	@Override
 	public String toString() {
-		String name = getName();
+	
+		final String name = getName();
 		String append = "";
-		if(name != null && !name.equals("")) {
-			append = "(\"" + this.getName() + "\")";
+		if ((name != null) && !name.equals("")) {
+			append = "(\"" + getName() + "\")";
 		}
 		return "TAG_Byte" + append + ": " + value;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+	
+		final int prime = 31;
+		int result = super.hashCode();
+		result = (prime * result) + value;
+		return result;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+	
+		if (this == obj) { return true; }
+		if (!super.equals(obj)) { return false; }
+		if (!(obj instanceof ByteTag)) { return false; }
+		final ByteTag other = (ByteTag) obj;
+		if (value != other.value) { return false; }
+		return true;
 	}
 	
 }

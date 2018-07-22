@@ -1,5 +1,7 @@
 package org.jnbt;
 
+//@formatter:off
+
 /*
  * JNBT License
  * 
@@ -33,13 +35,16 @@ package org.jnbt;
  * POSSIBILITY OF SUCH DAMAGE. 
  */
 
+//@formatter:on
+
 /**
  * The <code>TAG_Short</code> tag.
+ * 
  * @author Graham Edgecombe
- *
+ * 
  */
 public final class ShortTag extends Tag {
-
+	
 	/**
 	 * The value.
 	 */
@@ -47,27 +52,61 @@ public final class ShortTag extends Tag {
 	
 	/**
 	 * Creates the tag.
-	 * @param name The name.
-	 * @param value The value.
+	 * 
+	 * @param name
+	 *            The name.
+	 * @param value
+	 *            The value.
 	 */
-	public ShortTag(String name, short value) {
+	public ShortTag(final String name, final short value) {
+	
 		super(name);
 		this.value = value;
 	}
 	
 	@Override
 	public Short getValue() {
+	
 		return value;
 	}
 	
 	@Override
 	public String toString() {
-		String name = getName();
+	
+		final String name = getName();
 		String append = "";
-		if(name != null && !name.equals("")) {
-			append = "(\"" + this.getName() + "\")";
+		if ((name != null) && !name.equals("")) {
+			append = "(\"" + getName() + "\")";
 		}
 		return "TAG_Short" + append + ": " + value;
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+	
+		final int prime = 31;
+		int result = super.hashCode();
+		result = (prime * result) + value;
+		return result;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+	
+		if (this == obj) { return true; }
+		if (!super.equals(obj)) { return false; }
+		if (!(obj instanceof ShortTag)) { return false; }
+		final ShortTag other = (ShortTag) obj;
+		if (value != other.value) { return false; }
+		return true;
+	}
+	
 }

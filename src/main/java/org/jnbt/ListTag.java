@@ -1,5 +1,7 @@
 package org.jnbt;
 
+//@formatter:off
+
 /*
  * JNBT License
  * 
@@ -33,16 +35,19 @@ package org.jnbt;
  * POSSIBILITY OF SUCH DAMAGE. 
  */
 
+//@formatter:on
+
 import java.util.Collections;
 import java.util.List;
 
 /**
  * The <code>TAG_List</code> tag.
+ * 
  * @author Graham Edgecombe
- *
+ * 
  */
 public final class ListTag extends Tag {
-
+	
 	/**
 	 * The type.
 	 */
@@ -55,11 +60,16 @@ public final class ListTag extends Tag {
 	
 	/**
 	 * Creates the tag.
-	 * @param name The name.
-	 * @param type The type of item in the list.
-	 * @param value The value.
+	 * 
+	 * @param name
+	 *            The name.
+	 * @param type
+	 *            The type of item in the list.
+	 * @param value
+	 *            The value.
 	 */
-	public ListTag(String name, Class<? extends Tag> type, List<Tag> value) {
+	public ListTag(final String name, final Class<? extends Tag> type, final List<Tag> value) {
+	
 		super(name);
 		this.type = type;
 		this.value = Collections.unmodifiableList(value);
@@ -67,31 +77,68 @@ public final class ListTag extends Tag {
 	
 	/**
 	 * Gets the type of item in this list.
+	 * 
 	 * @return The type of item in this list.
 	 */
 	public Class<? extends Tag> getType() {
+	
 		return type;
 	}
 	
 	@Override
 	public List<Tag> getValue() {
+	
 		return value;
 	}
 	
 	@Override
 	public String toString() {
-		String name = getName();
+	
+		final String name = getName();
 		String append = "";
-		if(name != null && !name.equals("")) {
-			append = "(\"" + this.getName() + "\")";
+		if ((name != null) && !name.equals("")) {
+			append = "(\"" + getName() + "\")";
 		}
-		StringBuilder bldr = new StringBuilder();
-		bldr.append("TAG_List" + append + ": " + value.size() + " entries of type " + NBTUtils.getTypeName(type) + "\r\n{\r\n");
-		for(Tag t : value) {
-			bldr.append("   " + t.toString().replaceAll("\r\n", "\r\n   ") + "\r\n");
+		final StringBuilder bldr = new StringBuilder();
+		bldr.append("TAG_List" + append + ": " + value.size()
+				+ " entries of type " + NBTUtils.getTypeName(type)
+				+ "\r\n{\r\n");
+		for (final Tag t : value) {
+			bldr.append("   " + t.toString().replaceAll("\r\n", "\r\n   ")
+					+ "\r\n");
 		}
 		bldr.append("}");
 		return bldr.toString();
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+	
+		final int prime = 31;
+		int result = super.hashCode();
+		result = (prime * result) + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+	
+		if (this == obj) { return true; }
+		if (!super.equals(obj)) { return false; }
+		if (!(obj instanceof ListTag)) { return false; }
+		final ListTag other = (ListTag) obj;
+		if (value == null) {
+			if (other.value != null) { return false; }
+		} else if (!value.equals(other.value)) { return false; }
+		return true;
+	}
+	
 }

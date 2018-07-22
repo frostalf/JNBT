@@ -1,5 +1,7 @@
 package org.jnbt;
 
+//@formatter:off
+
 /*
  * JNBT License
  * 
@@ -33,10 +35,13 @@ package org.jnbt;
  * POSSIBILITY OF SUCH DAMAGE. 
  */
 
+//@formatter:on
+
 /**
  * The <code>TAG_Double</code> tag.
+ * 
  * @author Graham Edgecombe
- *
+ * 
  */
 public final class DoubleTag extends Tag {
 	
@@ -44,30 +49,67 @@ public final class DoubleTag extends Tag {
 	 * The value.
 	 */
 	private final double value;
-
+	
 	/**
 	 * Creates the tag.
-	 * @param name The name.
-	 * @param value The value.
+	 * 
+	 * @param name
+	 *            The name.
+	 * @param value
+	 *            The value.
 	 */
-	public DoubleTag(String name, double value) {
+	public DoubleTag(final String name, final double value) {
+	
 		super(name);
 		this.value = value;
 	}
 	
 	@Override
 	public Double getValue() {
+	
 		return value;
 	}
 	
 	@Override
 	public String toString() {
-		String name = getName();
+	
+		final String name = getName();
 		String append = "";
-		if(name != null && !name.equals("")) {
-			append = "(\"" + this.getName() + "\")";
+		if ((name != null) && !name.equals("")) {
+			append = "(\"" + getName() + "\")";
 		}
 		return "TAG_Double" + append + ": " + value;
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+	
+		final int prime = 31;
+		int result = super.hashCode();
+		long temp;
+		temp = Double.doubleToLongBits(value);
+		result = (prime * result) + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+	
+		if (this == obj) { return true; }
+		if (!super.equals(obj)) { return false; }
+		if (!(obj instanceof DoubleTag)) { return false; }
+		final DoubleTag other = (DoubleTag) obj;
+		if (Double.doubleToLongBits(value) != Double
+				.doubleToLongBits(other.value)) { return false; }
+		return true;
+	}
+	
 }
