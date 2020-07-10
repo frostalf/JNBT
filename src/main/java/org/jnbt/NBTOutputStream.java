@@ -39,6 +39,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.InflaterOutputStream;
+import static org.jnbt.NBTCompression.FROM_BYTE;
 
 
 /**
@@ -65,9 +68,38 @@ public final class NBTOutputStream implements Closeable {
      * @throws IOException
      *             if an I/O error occurs.
      */
+    @Deprecated
     public NBTOutputStream(OutputStream os) throws IOException {
         this.os = new DataOutputStream(os);
     }
+
+	/**
+	 * Creates a new {@code NBTOutputStream}, which will write data to the
+	 * specified underlying output stream.
+	 *
+     * @param os The output stream.
+	 * @param compression The type of compression the output stream should use.
+	 * @throws IOException if an I/O error occurs.
+	 * @since 1.5
+	 */
+	public NBTOutputStream(OutputStream os, NBTCompression compression) throws IOException {
+		switch (compression) {
+			case UNCOMPRESSED:
+				this.os = new DataOutputStream(os);
+				break;
+			case GZIP:
+				this.os = new DataOutputStream(new GZIPOutputStream(os));
+				break;
+			case ZLIB:
+				this.os = new DataOutputStream(new InflaterOutputStream(os));
+				break;
+			case FROM_BYTE:
+				throw new IllegalArgumentException(FROM_BYTE.name() + " is only for reading.");
+			default:
+				throw new AssertionError("[JNBT] Unimplemented " + NBTCompression.class.getSimpleName()
+				                         + ": " + compression);
+		}
+	}
 
     /**
      * Writes a tag.
