@@ -14,7 +14,7 @@
     <distributionManagement>
         <repository>
             <id>FrostRepo</id>
-            <url>ftp://ftp.frostalf.net</url>
+            <url>sftp://repo.frostalf.net/var/www/repo</url>
             <uniqueVersion>false</uniqueVersion>
             <name>FrostRepo</name>
             <layout>default</layout>
@@ -24,7 +24,7 @@
     <build>
         
         <finalName>JNBT</finalName>
-        <defaultGoal>clean package install</defaultGoal>
+        <defaultGoal>package install</defaultGoal>
         <!-- BUILD PLUGINS -->
 
         <plugins>
@@ -32,7 +32,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -42,7 +42,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <phase>install</phase>
@@ -54,8 +54,26 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <source>8</source>
+                    <doctitle>JNBT docs v${project.version}</doctitle>
+                    <windowtitle>JNBT docs v${project.version}</windowtitle>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
+                <version>3.0.0-M1</version>
                 <configuration>
                     <repositoryId>FrostRepo</repositoryId>
                 </configuration>
@@ -72,8 +90,8 @@
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ftp</artifactId>
-                <version>3.1.0</version>
+                <artifactId>wagon-ssh</artifactId>
+                <version>3.3.4</version>
             </extension>
         </extensions>
     </build>
