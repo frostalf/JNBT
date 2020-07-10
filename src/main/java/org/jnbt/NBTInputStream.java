@@ -35,12 +35,17 @@ package org.jnbt;
 
 import java.io.Closeable;
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
+import static org.jnbt.NBTCompression.FROM_BYTE;
+import static org.jnbt.NBTCompression.fromId;
 
 /**
  * This class reads <strong>NBT</strong>, or <strong>Named Binary Tag</strong>
@@ -62,9 +67,51 @@ public final class NBTInputStream implements Closeable {
      * @param is the input stream
      * @throws IOException if an I/O error occurs
      */
+    @Deprecated
     public NBTInputStream(InputStream is) throws IOException {
         this.is = new DataInputStream(is);
     }
+
+	/**
+	 * Creates a new {@code NBTInputStream}, which will source its data
+	 * from the specified input stream.
+	 *
+     * @param is the input stream
+	 * @param compression The type of compression the input stream uses.
+	 * @throws IOException if an I/O error occurs.
+	 * @since 1.5
+	 */
+
+    public NBTInputStream(InputStream is, NBTCompression compression) throws IOException {
+		NBTCompression resolvedCompression;
+		if (compression == FROM_BYTE) {
+			int compressionByte = is.read();
+			if (compressionByte < 0) {
+				//noinspection NewExceptionWithoutArguments
+				throw new EOFException();
+			}
+			resolvedCompression = fromId(compressionByte);
+		} else {
+			resolvedCompression = compression;
+		}
+
+		switch (resolvedCompression) {
+			case UNCOMPRESSED:
+				this.is = new DataInputStream(is);
+				break;
+			case GZIP:
+				this.is = new DataInputStream(new GZIPInputStream(is));
+				break;
+			case ZLIB:
+				this.is = new DataInputStream(new InflaterInputStream(is));
+				break;
+			case FROM_BYTE:
+				throw new AssertionError("FROM_BYTE Should have been handled already");
+			default:
+				throw new AssertionError("[JNBT] Unimplemented " + NBTCompression.class.getSimpleName()
+				                         + ": " + compression);
+		}
+	}
 
     /**
      * Reads an NBT tag from the stream.
@@ -142,7 +189,7 @@ public final class NBTInputStream implements Closeable {
             int childType = is.readByte();
             length = is.readInt();
 
-            List<Tag> tagList = new ArrayList<Tag>();
+            List<Tag> tagList = new ArrayList<>();
             for (int i = 0; i < length; ++i) {
                 Tag tag = readTagPayload(childType, depth + 1);
                 if (tag instanceof EndTag) {
@@ -153,7 +200,7 @@ public final class NBTInputStream implements Closeable {
 
             return new ListTag(NBTUtils.getTypeClass(childType), tagList);
         case NBTConstants.TYPE_COMPOUND:
-            Map<String, Tag> tagMap = new HashMap<String, Tag>();
+            Map<String, Tag> tagMap = new HashMap<>();
             while (true) {
                 NamedTag namedTag = readNamedTag(depth + 1);
                 Tag tag = namedTag.getTag();
